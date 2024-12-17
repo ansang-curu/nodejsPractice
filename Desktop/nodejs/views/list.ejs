@@ -18,14 +18,58 @@
 <!--  html 중간에 자바스크립트 문법 넣을때 %, 그리고 주석에 기호잘못넣으면 에러뜬다  -->
       <% for(let i =0;i<posts.length;i++){ %>
     <div class="list-box">
-          <h4><a href='/detail/<%= posts[i]._id %>'><%=JSON.stringify(posts[i].title)  %></a></h4>
+          <h4><a href='/detail/<%= posts[i]._id %>'><%=JSON.stringify(posts[i].title)  %><a href="/edit/<%= posts[i]._id %>">✏️</a><span class="delete" data-id="<%= posts[i]._id %>">🗑️</span></a></h4>
+          
           <p><%=JSON.stringify(posts[i].content)  %></p>
           <p>작성자:<%=JSON.stringify(posts[i].name)  %></p>
         </div>
      <% } %>
 
-
+<a href="/list/next/<%= posts[posts.length-1]._id %>">다음</a>
   </div>
+
+<script>
+// document.querySelectorAll('.delete')[0].addEventListener('click',function(){
+// // 서버에 삭제 요청날리기~
+// fetch('/delete?docid=<%= posts[0]._id %>',{method:'delete'})  
+// console.log('<%= posts[0]._id %>')        
+// })
+// !!!!!!!!!!!!!엑시오스 사용하면 겟포스트 요청 등 편함. axios.get(/URL).then((r)=>{ console.log(r)}) 단 따로설치필요
+
+for(i=0;i<'<%=posts.length%>';i++){
+  document.querySelectorAll('.delete')[i].addEventListener('click',function(e){
+  // 서버에 삭제 요청날리기~
+fetch('/delete?docid='+e.target.dataset.id,{method:'delete'}).then((r)=>r.text()).then((r)=>{e.target.parentElement.parentElement.style.display='none'   })
+ 
+console.log('실행함')
+
+})
+}
+
+// 데이터 전송방법: 쿼리스트링, url파라미터, 기본 폼태그 겟포스트, 매서드 오버라이드해서 풋
+fetch('/URL').then((r)=>{
+  if(r.status==200){
+    return r.json()
+  }else{
+    // alert('에러남')
+  }
+})
+.then((result)=>{
+// 성공시 실행코드
+}).catch((error)=>{
+  // 인터넷문제 등으로 실패시 실행코드
+  console.log(error)
+})
+</script>
+
 
 </body>
 </html>
+
+<!--fetch('/abc,{                      //서버로 ajax로  새로고침없이 겟요청해줌
+  method:'post',
+  headers:{
+    'Content-type':'application/json'
+  },
+  body: JSON.stringify({a:1})
+  } -->
